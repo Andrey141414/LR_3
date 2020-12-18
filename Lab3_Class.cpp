@@ -1,103 +1,158 @@
-﻿
-#define _CRT_SECURE_NO_WARNINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include<stdio.h>
 #include<locale.h>
 #include<windows.h>
 #include <math.h>
-class kompleksnoe_chislo {
+#include<string>
+#include<malloc.h>
+#include<stdlib.h>
+using namespace std;
+string NAMES[5] = { "Пешка","Конь", "Слон", "Ладья", "Ферзь" };
+class chess_figure {
 
 private:
-	float mnimaya_chast;
-	float vechestv_chast;
+	int value;
+	string name;
+	//Если pawn = true: фигура является пешкой, если false, то не пешкой 
+
 public:
-	
+	bool pawn = false;
 	//функция установки значений
 	void Read();
 	//функция получения значений
-	void Init(float m_c, float v_c);
+	void Init(int val, string name);
 	//функция вывода
 	void Display();
-	kompleksnoe_chislo Add(kompleksnoe_chislo a, kompleksnoe_chislo b);
-	kompleksnoe_chislo Raz(kompleksnoe_chislo a, kompleksnoe_chislo b);
-	void compare(kompleksnoe_chislo a, kompleksnoe_chislo b);
-	void zapolnenie_din_mass(kompleksnoe_chislo* mass, int N);
+	chess_figure Add(chess_figure a, chess_figure b);
+	void compare(chess_figure b);
+	void zapolnenie_din_mass(chess_figure* mass, int N);
+	void pawn_promotion();
 };
-void kompleksnoe_chislo::Read()
+void chess_figure::Read()
 {
-	
 
-	printf("Введите мнимую часть числа - ");
-	scanf("%f", &mnimaya_chast);
-	while (getchar() != '\n');
+
+
+	int vibor;
+	puts("Название фигуры");
+	for (int i = 0; i < 5; i++)
+	{
+
+		cout << i + 1 << " " << NAMES[i] << "\n";
+
+	}
+
+	cin >> vibor;
+	name = NAMES[vibor - 1];
+	switch (vibor)
+	{
+	case 1: {value = 1; pawn = true; }break;
+	case 2: {value = 3; }break;
+	case 3: {value = 3; }break;
+	case 4: {value = 5; }break;
+	case 5: {value = 9; }break;
+	}
 	system("cls");
-	printf("Введите весчественную часть числа - ");
-	scanf("%f", &vechestv_chast);
-	while (getchar() != '\n');
+
+}
+void chess_figure::Init(int Val, string Name)
+{
+	value = Val;
+	name = Name;
+	if (Name == NAMES[0])
+		pawn = true;
+	else
+		pawn = false;
+}
+void chess_figure::Display()
+{
+
+	cout << name << " Ценность " << value << "\n";
+
+
+}
+void chess_figure::compare(chess_figure b)
+{
 	system("cls");
+	string comp;
 
 
-	while (getchar() != '\n');
-}
-void kompleksnoe_chislo::Init(float m_c, float v_c)
-{
-	mnimaya_chast = m_c;
-	vechestv_chast = v_c;
-}
-void kompleksnoe_chislo::Display()
-{
 
-	printf(" %.1fi  + %.1f", mnimaya_chast, vechestv_chast);
-	puts("");
-}
-void kompleksnoe_chislo::compare(kompleksnoe_chislo a, kompleksnoe_chislo b)
-{
-	char znak;
-
-	printf("Сравнение чисел %.1fi + %.1f  и  %.1fi + %.1f \nпо модулю\n", a.mnimaya_chast, a.vechestv_chast, b.mnimaya_chast, b.vechestv_chast);
-	float amod = sqrt(a.vechestv_chast * a.vechestv_chast + a.mnimaya_chast * a.mnimaya_chast);
-	float bmod = sqrt(b.vechestv_chast * b.vechestv_chast + b.mnimaya_chast * b.mnimaya_chast);
-	if (amod > bmod)
+	if (value > b.value)
 	{
-		znak = '>';
+		comp = " Лучше чем ";
 	}
-	if (amod < bmod)
+	if (value < b.value)
 	{
-		znak = '<';
+		comp = " Хуже чем ";
 	}
-	if (amod == bmod)
+	if (value == b.value)
 	{
-		znak = '=';
+		comp = " не хуже и не лучше чем ";
 	}
+	cout << name << " " << comp << " " << b.name;
 
-	printf("%.1fi + %.1f  %c  %.1fi + %.1f", a.mnimaya_chast, a.vechestv_chast, znak, b.mnimaya_chast, b.vechestv_chast);
 }
-kompleksnoe_chislo kompleksnoe_chislo::Add(kompleksnoe_chislo a, kompleksnoe_chislo b)
+chess_figure chess_figure::Add(chess_figure a, chess_figure b)
 {
-	kompleksnoe_chislo Summa;
-	Summa.mnimaya_chast = a.mnimaya_chast + b.mnimaya_chast;
-	Summa.vechestv_chast = a.vechestv_chast + b.vechestv_chast;
+	system("cls");
+	chess_figure Summa;
+	Summa.value = a.value + b.value;
+	Summa.name = a.name + " и " + b.name;
+
 	return Summa;
 }
-kompleksnoe_chislo kompleksnoe_chislo::Raz(kompleksnoe_chislo a, kompleksnoe_chislo b)
+void chess_figure::pawn_promotion()
 {
-	kompleksnoe_chislo Raznost;
-	Raznost.mnimaya_chast = a.mnimaya_chast - b.mnimaya_chast;
-	Raznost.vechestv_chast = a.vechestv_chast - b.vechestv_chast;
-	return Raznost;
+	puts("Ваша пешка дошла до конца доски");
+	puts("Выбирите фигуру, в которую она превратится");
+	int vibor;
+	puts("Название фигуры");
+	for (int i = 1; i < 5; i++)
+	{
+
+		cout << i << " " << NAMES[i] << "\n";
+
+	}
+
+	cin >> vibor;
+	name = NAMES[vibor];
+	switch (vibor)
+	{
+
+	case 1: {value = 3; }break;
+	case 2: {value = 3; }break;
+	case 3: {value = 5; }break;
+	case 4: {value = 9; }break;
+	}
+	system("cls");
+
 }
+
 //Заполнение динамического массива
-void kompleksnoe_chislo::zapolnenie_din_mass(kompleksnoe_chislo* mass, int N)
+void chess_figure::zapolnenie_din_mass(chess_figure* mass, int N)
 {
-	int size = sizeof(kompleksnoe_chislo);
-	kompleksnoe_chislo a ;
-	a.mnimaya_chast = 0;
-	a.vechestv_chast = 1;
+	int size = sizeof(chess_figure);
+
 	for (int i = 0; i < N; i++)
 	{
-		a.mnimaya_chast = a.vechestv_chast +1;
-		a.vechestv_chast = a.mnimaya_chast +1;
-		*(mass + i * size) = a;
+		chess_figure t;
+		t.name = NAMES[i];
+		switch (i)
+		{
+		case 0: {t.value = 1; }break;
+		case 1: {t.value = 3; }break;
+		case 2: {t.value = 3; }break;
+		case 3: {t.value = 5; }break;
+		case 4: {t.value = 9; }break;
+		}
+
+
+
+		*(mass + (i)) = t;
+
+
 	}
 }
 int main()
@@ -106,62 +161,61 @@ int main()
 	SetConsoleOutputCP(1251);
 	setlocale(LC_ALL, "Rus");
 
-	kompleksnoe_chislo A, B;
-	
-	//A.Init(2.1, -5.0);
+	chess_figure A, B;
+
 	A.Read();
-	puts("Числа A и B");
 	A.Display();
-	B.Init(2.1,-5.0);
+	B.Init(3, "Конь");
 	B.Display();
 	puts("");
 	system("pause");
 	system("cls");
 
-	kompleksnoe_chislo *Sum = new kompleksnoe_chislo;
-	kompleksnoe_chislo* Raz; Raz = (kompleksnoe_chislo *)malloc(sizeof(kompleksnoe_chislo));
+	chess_figure* Sum;
+	Sum = new (chess_figure);
+	//chess_figure* Raz; Raz = (chess_figure*)malloc(sizeof(chess_figure));
 
 	(*Sum) = Sum->Add(A, B);
-	puts("A+B");
 	Sum->Display();
-	
+
 
 	puts("");
 	system("pause");
 	system("cls");
-
-
-	puts("A-B");
-	(*Raz) = Raz->Raz(A, B);
-	Raz->Display();
+	//Сравнение A и B
+	A.compare(B);
+	puts("");
 	system("pause");
 	system("cls");
-	//удаление
-	free(Raz);
+	if (A.pawn == true)
+	{
+		A.pawn_promotion();
+		A.Display();
+		puts("");
+		system("pause");
+		system("cls");
+	}
 	delete(Sum);
 
-
-
 	//Массив динамических объектов класса 
-	const int N = 3;
-	
+	int N = 5;
+
 
 
 
 	//динамический массив
-	
-	kompleksnoe_chislo* dinmas;
-	dinmas = new kompleksnoe_chislo[N];
+	chess_figure* dinmas = new chess_figure[N];
 	dinmas->zapolnenie_din_mass(dinmas, N);
 	puts("Динамический массив");
 	for (int i = 0; i < N; i++)
-	{
-		(dinmas+i*sizeof(kompleksnoe_chislo))->Display();
-	}
-	
-	
-	
-	delete(dinmas);
-	
-}
+		(dinmas + i)->Display();
 
+
+
+
+
+
+
+
+
+}
